@@ -4,7 +4,7 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "build": "node install-chromium.js",
+    "build": "node -e \"console.log('Skipping custom build step')\"",
     "start": "node server.js"
   },
   "dependencies": {
