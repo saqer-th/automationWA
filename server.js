@@ -1,19 +1,21 @@
+// server.js
 import express from "express";
 import { initWhatsApp, getClient } from "./wa.js";
 
 const app = express();
 app.use(express.json());
 
-await initWhatsApp();
+// simple health check
+app.get("/status", (_, res) => {
+  res.json({ ready: !!getClient() });
+});
 
-// ✅ إرسال رسالة
+// send endpoint
 app.post("/send", async (req, res) => {
   const { to, message } = req.body;
-
   try {
     const client = getClient();
-    if (!client) return res.status(500).json({ error: "❌ WhatsApp client not ready" });
-
+    if (!client) return res.status(500).json({ error: "WhatsApp client not ready" });
     await client.sendText(to, message);
     res.json({ success: true, to, message });
   } catch (err) {
@@ -22,11 +24,16 @@ app.post("/send", async (req, res) => {
   }
 });
 
-// ✅ فحص الحالة
-app.get("/status", (req, res) => {
-  const client = getClient();
-  res.json({ ready: !!client });
-});
-
 const PORT = process.env.PORT || 8081;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
+// 1) Start listening immediately so Render detects the open port
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Server listening on port ${PORT}`);
+  // 2) Then initialize WhatsApp in background (non-blocking)
+  initWhatsApp()
+    .then(() => console.log("WhatsApp init finished"))
+    .catch((err) => {
+      console.error("❌ WhatsApp init error:", err);
+      // you can decide to process.exit(1) if this should be fatal
+    });
+});
