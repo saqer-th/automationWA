@@ -1,4 +1,4 @@
-import { create } from "@open-wa/wa-automate-nodejs";
+import { create } from "@open-wa/wa-automate";
 import puppeteer from "puppeteer";
 
 let clientInstance = null;
