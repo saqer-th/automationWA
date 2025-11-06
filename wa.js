@@ -1,19 +1,18 @@
 import { create } from "@open-wa/wa-automate";
-import puppeteer from "puppeteer";
+import chromium from "chromium";
 
 let clientInstance = null;
 
 export async function initWhatsApp() {
   console.log("🚀 Initializing WhatsApp session...");
 
-  // 👇 نستخدم executablePath من Puppeteer
-  const executablePath = puppeteer.executablePath();
+  const executablePath = chromium.path; // ✅ أهم سطر
 
   const client = await create({
     sessionId: "whatsapp-auto-session",
     headless: true,
     useChrome: true,
-    executablePath, // ✅ هذا المفتاح هو الأهم
+    executablePath,
     qrTimeout: 0,
     authTimeout: 0,
     multiDevice: true,
