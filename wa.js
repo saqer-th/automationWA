@@ -1,4 +1,4 @@
-import { create } from "@open-wa/wa-automate-nodejs";
+import { create } from "@open-wa/wa-automate";
 
 const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
 
